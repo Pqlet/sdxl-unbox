@@ -8,3 +8,6 @@ wandb
 einops
 transformers
 accelerate
+webdataset
+wcwidth
+datasets
