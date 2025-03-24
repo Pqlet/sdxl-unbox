@@ -277,7 +277,7 @@ def main():
         sae_name=cfg_sae.sae_name,
         dummy=False,
     ) for cfg_sae in cfg.saes]
-
+    print(aes)
     training_loop_(
         aes,
         acts_iter,

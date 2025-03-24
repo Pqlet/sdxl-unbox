@@ -16,8 +16,8 @@
     "save_interval": 5000,
 
     "paths_to_latents": [
-        "PASS YOUR PATHS HERE. Example /home/username/latents/<timestamp>. It should contain tar archives with latents."
+        "data/2025-03-23 21:38:39.400163"
     ],
-    "save_path_base": "<Your SAE save path>",
+    "save_path_base": "runs",
     "block_name": "unet.down_blocks.2.attentions.1"
 }

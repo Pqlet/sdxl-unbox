@@ -21,7 +21,8 @@ class SAETrainingConfig:
     
     @property
     def save_path(self):
-        return f'/dlabscratch1/surkov/sae_models/{self.block_name}_k{self.k}_hidden{self.n_dirs}_auxk{self.auxk}_bs{self.bs}_lr{self.lr}'
+        # pqlet: tut bil hardkod
+        return f'{self.save_path_base}/{self.block_name}_k{self.k}_hidden{self.n_dirs}_auxk{self.auxk}_bs{self.bs}_lr{self.lr}'
 
 
 @dataclass
