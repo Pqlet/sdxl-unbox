@@ -26,7 +26,7 @@ class ActivationsDataloader:
         
         # pqlet: see __key__ values
         kkeys = []
-        print("to_retrieve", to_retrieve)
+        # print("to_retrieve", to_retrieve)
         for _ in range(to_retrieve):
             sample = next(self.iter)
             
@@ -34,7 +34,7 @@ class ActivationsDataloader:
             kkeys.append(sample['__key__'])
             
             latents = sample['output.pth'] if self.output_or_diff == 'output' else sample['diff.pth']
-            print(sample['__key__'], latents.shape)
+            # print(sample['__key__'], latents.shape)
             latents = latents.permute((0, 1, 3, 4, 2))
             # print(latents.shape)
             latents = latents.reshape((-1, latents.shape[-1]))
@@ -42,21 +42,21 @@ class ActivationsDataloader:
             to_merge.append(latents.to('cuda'))
             self.one_size = latents.shape[0]
         self.buffer = torch.cat(to_merge, dim=0)
-        print(f"buffer shape:{self.buffer.shape}")
+        # print(f"buffer shape:{self.buffer.shape}")
         
         shuffled_indices = torch.randperm(self.buffer.shape[0])
         self.buffer = self.buffer[shuffled_indices]
-        print(f"buffer shape:{self.buffer.shape}")
+        # print(f"buffer shape:{self.buffer.shape}")
         
         
         # pqlet: see __key__ values
         import numpy as np
         from einops import repeat
-        print(shuffled_indices)
+        # print(shuffled_indices)
         kkeys = np.array(kkeys)
         kkeys = repeat(kkeys, "n -> (n x)", x=16*16*50) # 50 from batch size of the saved web dataset
-        print(kkeys)
-        print(kkeys[shuffled_indices])
+        # print(kkeys)
+        # print(kkeys[shuffled_indices])
         
         self.pointer = 0
 
