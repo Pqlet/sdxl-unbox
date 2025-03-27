@@ -156,6 +156,7 @@ def training_loop_(
     sae_cfgs,
 ):
     sae_packs = []
+    # import code; code.interact(local=locals())
     for ae, cfg, logger in zip(aes, sae_cfgs, loggers):
         pbar = tqdm.tqdm(unit=" steps", desc="Training Loss: ")
         fstats = FeaturesStats(ae.n_dirs, logger)

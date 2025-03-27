@@ -16,21 +16,36 @@ from torch.utils.data import DataLoader
 import diffusers
 import fire
 
-def main(save_path, start_at=0, finish_at=30_000, dataset_batch_size=50):
+# def main(save_path, start_at=0, finish_at=30_000, dataset_batch_size=50):
+def main(save_path, start_at=0, finish_at=12_000, dataset_batch_size=50):
     # They used 1.5M prompts in the paper (Section 3. Training)
     blocks_to_save = [
-        'unet.down_blocks.2.attentions.1',
+        # 'unet.down_blocks.
+        # 'unet.down_blocks.2.attentions.1',
         # 'unet.mid_block.attentions.0',
         # 'unet.up_blocks.0.attentions.0',
         # 'unet.up_blocks.0.attentions.1',
+        'unet.down_blocks.2.attentions.1.transformer_blocks.0.attn2',
+        'unet.down_blocks.2.attentions.1.transformer_blocks.1.attn2',
+        'unet.down_blocks.2.attentions.1.transformer_blocks.2.attn2',
+        'unet.down_blocks.2.attentions.1.transformer_blocks.3.attn2',
+        'unet.down_blocks.2.attentions.1.transformer_blocks.4.attn2',
+        'unet.up_blocks.0.attentions.0.transformer_blocks.0.attn2',
+        'unet.up_blocks.0.attentions.0.transformer_blocks.1.attn2',
+        'unet.up_blocks.0.attentions.0.transformer_blocks.2.attn2',
+        'unet.up_blocks.0.attentions.0.transformer_blocks.3.attn2',
+        'unet.up_blocks.0.attentions.0.transformer_blocks.4.attn2'
     ]
 
     # Initialization
     dataset = load_dataset("guangyil/laion-coco-aesthetic", split="train", columns=["caption"], streaming=True).shuffle(seed=42)
-    pipe = HookedStableDiffusionXLPipeline.from_pretrained('stabilityai/sdxl-turbo')
+    # Save activations if fp16
+    dtype = torch.float16
+    pipe = HookedStableDiffusionXLPipeline.from_pretrained('stabilityai/sdxl-turbo', torch_dtype=dtype, variant=("fp16" if dtype==torch.float16 else None)) 
     pipe.to('cuda')
     pipe.set_progress_bar_config(disable=True)
     dataloader = DataLoader(dataset, batch_size=dataset_batch_size)
+    print(f'pipe.dtype: {pipe.dtype}')
 
     ct = datetime.datetime.now()
     save_path = os.path.join(save_path, str(ct))
@@ -74,7 +89,7 @@ def main(save_path, start_at=0, finish_at=30_000, dataset_batch_size=50):
         output, cache = pipe.run_with_cache(
             **kwargs
         )
-
+        
         blocks = cache['input'].keys()
         for block in blocks:
             sample = {
